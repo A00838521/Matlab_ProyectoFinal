@@ -24,7 +24,8 @@ Qp = input('Ingrese la carga positiva de la partícula: ');
 Qp = abs(Qp) * 1;
 
 % Fórmulas
-kC = 8.99e+9;
+eps0 = 8.85e-12;
+kC = 1/(4*pi*eps0);
 Rx = xG - xCn;
 Ry = yG - yCn;
 R = sqrt(Rx.^2 + Ry.^2).^3;
