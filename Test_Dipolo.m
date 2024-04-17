@@ -1,195 +1,105 @@
-% Clear the workspace, close all figures, and clear the command window
-clear; close all; clc;
+% Crear grid
+N=20; % Número de puntos en cada dimensión
+minX=-2; maxX=+2; % Valores mínimos y máximos de x
+minY=-2; maxY=+2; % Valores mínimos y máximos de y
+minZ=-2; maxZ=+2; % Valores mínimos y máximos de z
+x=linspace(minX,maxX,N); % Generar valores de x
+y=linspace(minY,maxY,N); % Generar valores de y
+z=linspace(minZ,maxZ,N); % Generar valores de z
+[xG,yG,zG]=meshgrid(x,y,z); % Crear una cuadrícula de puntos en el espacio 3D
 
-%Crear grid
-N=20; % Number of points in each dimension
-minX=-2; maxX=+2; % Minimum and maximum x coordinates
-minY=-2; maxY=+2; % Minimum and maximum y coordinates
-minZ=-2; maxZ=+2; % Minimum and maximum z coordinates
-x=linspace(minX,maxX,N); % Generate a linearly spaced vector of x coordinates
-y=linspace(minY,maxY,N); % Generate a linearly spaced vector of y coordinates
-z=linspace(minZ,maxZ,N); % Generate a linearly spaced vector of z coordinates
-[xG,yG,zG]=meshgrid(x,y,z); % Create a 3D grid of x, y, and z coordinates
+% Posición de la partícula negativa
+xCn = input('Ingrese la coordenada x de la primera partícula negativa: '); % Coordenada x de la partícula negativa
+yCn = input('Ingrese la coordenada y de la primera partícula negativa: '); % Coordenada y de la partícula negativa
+zCn = input('Ingrese la coordenada z de la primera partícula negativa: '); % Coordenada z de la partícula negativa
 
-% Position of the negative particle
-xCn = 0.5; % x coordinate of the negative particle
-yCn = 0;   % y coordinate of the negative particle
-zCn = 0;   % z coordinate of the negative particle
+% Ancho de la partícula
+a=0.4; % Ancho de la partícula
+aParticula=0.1; % Ancho de la partícula central
 
-% Width of the particles
-a=0.4;
+% Posición de la partícula positiva
+xCp = input('Ingrese la coordenada x de la primera partícula positiva: '); % Coordenada x de la partícula positiva
+yCp = input('Ingrese la coordenada y de la primera partícula positiva: '); % Coordenada y de la partícula positiva
+zCp = input('Ingrese la coordenada z de la primera partícula positiva: '); % Coordenada z de la partícula positiva
 
-% Position of the positive particle
-xCp = -0.5; % x coordinate of the positive particle
-yCp = 1;    % y coordinate of the positive particle
-zCp = 0;    % z coordinate of the positive particle
+% Posición de la partícula central
+xC = input('Ingrese la coordenada x de la partícula central: '); % Coordenada x de la partícula central
+yC = input('Ingrese la coordenada y de la partícula central: '); % Coordenada y de la partícula central
+zC = input('Ingrese la coordenada z de la partícula central: '); % Coordenada z de la partícula central
 
-% Position of the central particle
-xC = 1; % x coordinate of the central particle
-yC = 0; % y coordinate of the central particle
-zC = 0; % z coordinate of the central particle
-
-% Electric charges
-Qn = 20; % Negative charge of the particle
-Qn = abs(Qn) * -1; % Ensure the charge is negative
-Qp = 20; % Positive charge of the particle
-Qp = abs(Qp) * 1; % Ensure the charge is positive
-
-% Constants
-eps0 = 8.85e-12; % Permittivity of free space
-kC = 1/(4*pi*eps0); % Coulomb's constant
-
-% 2D plot
-Rx = xG - xCn; % x component of the distance between each point and the negative particle
-Ry = yG - yCn; % y component of the distance between each point and the negative particle
-R = sqrt(Rx.^2 + Ry.^2).^3; % Distance between each point and the negative particle
-Ex = kC .* Qn .* Rx ./ R; % x component of the electric field due to the negative particle
-Ey = kC .* Qn .* Ry ./ R; % y component of the electric field due to the negative particle
-Rx = xG - xCp; % x component of the distance between each point and the positive particle
-Ry = yG - yCp; % y component of the distance between each point and the positive particle
-R = sqrt(Rx.^2 + Ry.^2).^3; % Distance between each point and the positive particle
-Ex = Ex + kC .* Qp .* Rx ./ R; % x component of the electric field due to the positive particle
-Ey = Ey + kC .* Qp .* Ry ./ R; % y component of the electric field due to the positive particle
-E = sqrt(Ex.^2 + Ey.^2); % Magnitude of the electric field at each point
-
-% Calculate the electric field due to the central particle
-magnitudDeCargas = sqrt(Qn^2 + Qp^2); % Magnitude of the charges
-d = sqrt((xCn - xCp)^2 + (yCn - yCp)^2 + (zCn - zCp)^2); % Distance between the negative and positive particles
-p = magnitudDeCargas*d; % Dipole moment
-xm = (xCn + xCp)/2; % x coordinate of the midpoint between the negative and positive particles
-ym = (yCn + yCp)/2; % y coordinate of the midpoint between the negative and positive particles
-zm = (zCn + zCp)/2; % z coordinate of the midpoint between the negative and positive particles
-r = sqrt((xC - xm)^2 + (yC - ym)^2 + (zC - zm)^2); % Distance between the central particle and the midpoint
-vectorPosicionR = (xC - xm) + (yC - ym) + (zC - zm); % Position vector from the midpoint to the central particle
-magnitudDeR = sqrt((xC - xm)^2 + (yC - ym)^2 + (zC - zm)^2); % Magnitude of the position vector
-vectorUnitarioR = vectorPosicionR/magnitudDeR; % Unit vector in the direction of the position vector
-E = (kC * (2*p/(r^3)) * vectorUnitarioR); % Electric field due to the central particle
-
-% Plot the electric field vectors
-figure();
-h=quiver(xG,yG,u,v,'autoscalefactor',0.6); % Plot the electric field vectors
-set(h,'color',[1 0 0],'linewidth',1.2); % Set the color and linewidth of the vectors
-h=quiver(xC, yC, (xC - xm), (yC - ym), 'Color', 'blue', 'LineWidth', 2, 'MaxHeadSize', 0.5); % Plot the position vector of the central particle
-set(h,'color',[1 0 0],'linewidth',1.2); % Set the color and linewidth of the position vector
-axis([-1.5 1.5 -1.5 1.5]); % Set the axis limits
-axis equal; % Set the aspect ratio of the plot to be equal
-box on % Display the box around the plot
-h=rectangle('Position',[xCn-a/2,yCn-a/2,a,a],'curvature',[1 1]); % Plot the negative particle
-set(h,'Facecolor',[0 0 1],'Edgecolor',[0 0 1]); % Set the color and edge color of the negative particle
-text(xCn-0.07,yCn+0.05,'-','Color','white','FontSize',30); % Display the negative sign on the negative particle
-h=rectangle('Position',[xCp-a/2,yCp-a/2,a,a],'curvature',[1 1]); % Plot the positive particle
-set(h,'Facecolor',[1 0 0],'Edgecolor',[1 0 1]); % Set the color and edge color of the positive particle
-text(xCp-0.1,yCp,'+','Color','white','FontSize',30); % Display the positive sign on the positive particle
-
-% Display the coordinates of the central particle and its electric field
-disp("Coordenadas de la partícula central:");
-disp("x: " + xC);
-disp("y: " + yC);
-disp("z: " + zC);
-disp("Campo eléctrico de la partícula central:");
-disp("E: " + E);
-%Crear grid
-N=20;
-minX=-2;maxX=+2;
-minY=-2;maxY=+2;
-minZ=-2;maxZ=+2;
-x=linspace(minX,maxX,N);
-y=linspace(minY,maxY,N);
-z=linspace(minZ,maxZ,N);
-[xG,yG,zG]=meshgrid(x,y,z);
-%posicion de la particula negativa
-% xCn = input('Ingrese la coordenada x de la primera partícula negativa: ');
-% yCn = input('Ingrese la coordenada y de la primera partícula negativa: ');
-% zCn = input('Ingrese la coordenada z de la primera partícula negativa: ');
-xCn = 0.5;
-yCn = 0;
-zCn = 0;
-a=0.4; % Ancho
-%posicion de la particula postitiva
-% xCp = input('Ingrese la coordenada x de la primera partícula positiva: ');
-% yCp = input('Ingrese la coordenada y de la primera partícula positiva: ');
-% zCp = input('Ingrese la coordenada z de la primera partícula positiva: ');
-xCp = -0.5;
-yCp = 1;
-zCp = 0;
-% posicion de la particula central
-% xC = input('Ingrese la coordenada x de la partícula central: ');
-% yC = input('Ingrese la coordenada y de la partícula central: ');
-% zC = input('Ingrese la coordenada z de la partícula central: ');
-xC = 1;
-yC = 0;
-zC = 0;
-
-%campo electrico
-% Qn = input('Ingrese la carga negativa de la partícula: '); 
-% Qn = abs(Qn) * -1;
-% Qp = input('Ingrese la carga positiva de la partícula: ');
-% Qp = abs(Qp) * 1;
-Qn = 20; 
-Qn = abs(Qn) * -1;
-Qp = 20;
-Qp = abs(Qp) * 1;
+% Campo eléctrico
+Qn = input('Ingrese la carga negativa de la partícula: '); % Carga negativa de la partícula
+Qn = abs(Qn) * -1; % Asegurar carga negativa
+Qp = input('Ingrese la carga positiva de la partícula: '); % Carga positiva de la partícula
+Qp = abs(Qp) * 1; % Asegurar carga positiva
 
 % Constantes
-eps0 = 8.85e-12;
-kC = 1/(4*pi*eps0);
+eps0 = 8.85e-12; % Permitividad del espacio libre
+kC = 1/(4*pi*eps0); % Constante de Coulomb
 
-% Grafica 2d
-Rx = xG - xCn;
-Ry = yG - yCn;
-R = sqrt(Rx.^2 + Ry.^2).^3;
-Ex = kC .* Qn .* Rx ./ R;
-Ey = kC .* Qn .* Ry ./ R;
-Rx = xG - xCp;
-Ry = yG - yCp;
-R = sqrt(Rx.^2 + Ry.^2).^3;
-Ex = Ex + kC .* Qp .* Rx ./ R;
-Ey = Ey + kC .* Qp .* Ry ./ R;
-E = sqrt(Ex.^2 + Ey.^2);
+% Gráfico 2D
+Rx = xG - xCn; % Componente x de la distancia entre cada punto y la partícula negativa
+Ry = yG - yCn; % Componente y de la distancia entre cada punto y la partícula negativa
+R = sqrt(Rx.^2 + Ry.^2).^3; % Distancia entre cada punto y la partícula negativa
+Ex = kC .* Qn .* Rx ./ R; % Componente x del campo eléctrico debido a la partícula negativa
+Ey = kC .* Qn .* Ry ./ R; % Componente y del campo eléctrico debido a la partícula negativa
+Rx = xG - xCp; % Componente x de la distancia entre cada punto y la partícula positiva
+Ry = yG - yCp; % Componente y de la distancia entre cada punto y la partícula positiva
+R = sqrt(Rx.^2 + Ry.^2).^3; % Distancia entre cada punto y la partícula positiva
+Ex = Ex + kC .* Qp .* Rx ./ R; % Componente x del campo eléctrico debido a la partícula positiva
+Ey = Ey + kC .* Qp .* Ry ./ R; % Componente y del campo eléctrico debido a la partícula positiva
+E = sqrt(Ex.^2 + Ey.^2); % Magnitud del campo eléctrico en cada punto
 
-%componentes x, y
-u = Ex./E;
-v = Ey./E;
+% Componentes u y v
+u = Ex./E; % Componente x del vector unitario del campo eléctrico
+v = Ey./E; % Componente y del vector unitario del campo eléctrico
 
-% Calculo de Campo Electrico => Particula Central 2
-magnitudDeCargas = sqrt(Qn^2 + Qp^2);
-d = sqrt((xCn - xCp)^2 + (yCn - yCp)^2 + (zCn - zCp)^2);
-p = magnitudDeCargas*d;
+% Cálculo del Campo Eléctrico => Partícula Central 2
+magnitudDeCargas = sqrt(Qn^2 + Qp^2); % Magnitud de las cargas
+d = sqrt((xCn - xCp)^2 + (yCn - yCp)^2 + (zCn - zCp)^2); % Distancia entre las partículas negativa y positiva
+p = magnitudDeCargas*d; % Producto de la magnitud de las cargas y la distancia
 % Punto medio
-xm = (xCn + xCp)/2;
-ym = (yCn + yCp)/2;
-zm = (zCn + zCp)/2;
-% Distancia del punto medio a la particula central
-r = sqrt((xC - xm)^2 + (yC - ym)^2 + (zC - zm)^2);
-vectorPosicionR = (xC - xm) + (yC - ym) + (zC - zm);
-magnitudDeR = sqrt((xC - xm)^2 + (yC - ym)^2 + (zC - zm)^2);
-vectorUnitarioR = vectorPosicionR/magnitudDeR;
-% Campo electrico de la particula central
-E = (kC * (2*p/(r^3)) * vectorUnitarioR);
+xm = (xCn + xCp)/2; % Coordenada x del punto medio
+ym = (yCn + yCp)/2; % Coordenada y del punto medio
+zm = (zCn + zCp)/2; % Coordenada z del punto medio
+% Distancia desde el punto medio hasta la partícula central
+r = sqrt((xC - xm)^2 + (yC - ym)^2 + (zC - zm)^2); % Distancia entre el punto medio y la partícula central
+vectorPosicionR = (xC - xm) + (yC - ym) + (zC - zm); % Vector de posición desde el punto medio hasta la partícula central
+magnitudDeR = sqrt((xC - xm)^2 + (yC - ym)^2 + (zC - zm)^2); % Magnitud del vector de posición
+vectorUnitarioR = vectorPosicionR/magnitudDeR; % Vector unitario en la dirección del vector de posición
+% Campo eléctrico de la partícula central
+E = (kC * (2*p/(r^3)) * vectorUnitarioR); % Campo eléctrico en la partícula central
 
-% Grafica la flecha
+% Graficar la flecha
 figure();
+u_avg = mean(u(:)); % Componente x promedio del vector unitario del campo eléctrico
+v_avg = mean(v(:)); % Componente y promedio del vector unitario del campo eléctrico
 
-h=quiver(xG,yG,u,v,'autoscalefactor',0.6);
-set(h,'color',[1 0 0],'linewidth',1.2);
-h=quiver(xC, yC, (xC - xm), (yC - ym), 'Color', 'blue', 'LineWidth', 2, 'MaxHeadSize', 0.5);
+h=quiver(xC, yC, u_avg*3, v_avg*3, 'Color', 'blue', 'LineWidth', 2, 'MaxHeadSize', 1.5); % Graficar la flecha en la partícula central
+set(h,'color',[0 0 1],'linewidth',1.2);
+axis([-1.5 1.5 -1.5 1.5]);
+axis equal;
+box on
+hold on
+h=quiver(xG,yG,u,v,'autoscalefactor',0.6); % Graficar las flechas en cada punto
 set(h,'color',[1 0 0],'linewidth',1.2);
 axis([-1.5 1.5 -1.5 1.5]);
 axis equal;
 box on
-h=rectangle('Position',[xCn-a/2,yCn-a/2,a,a],'curvature',[1 1]);
+hold off
+h=rectangle('Position',[xC-aParticula/2,yC-aParticula/2,aParticula,aParticula],'curvature',[1 1]); % Graficar la partícula central
+set(h,'Facecolor',[0 0 0],'Edgecolor',[0 0 1]);
+h=rectangle('Position',[xCn-a/2,yCn-a/2,a,a],'curvature',[1 1]); % Graficar la partícula negativa
 set(h,'Facecolor',[0 0 1],'Edgecolor',[0 0 1]);
 text(xCn-0.07,yCn+0.05,'-','Color','white','FontSize',30);
-h=rectangle('Position',[xCp-a/2,yCp-a/2,a,a],'curvature',[1 1]);
+h=rectangle('Position',[xCp-a/2,yCp-a/2,a,a],'curvature',[1 1]); % Graficar la partícula positiva
 set(h,'Facecolor',[1 0 0],'Edgecolor',[1 0 1]);
 text(xCp-0.1,yCp,'+','Color','white','FontSize',30);
 
-
-
-% Campo electrico de la particula central
-disp("Coordenadas de la partícula central:");
+% Campo eléctrico de la partícula central
+disp("Coordenadas de la partícula central:"); % Mostrar las coordenadas de la partícula central
 disp("x: " + xC);
 disp("y: " + yC);
 disp("z: " + zC);
-disp("Campo eléctrico de la partícula central:");
-disp("E: " + E);
+disp("Campo eléctrico de la partícula central:"); % Mostrar el campo eléctrico en la partícula central
+disp("E: " + E + "N/C");
