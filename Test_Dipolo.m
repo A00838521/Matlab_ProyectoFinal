@@ -81,12 +81,17 @@ axis([-1.5 1.5 -1.5 1.5]);
 axis equal;
 box on
 hold off
-h=rectangle('Position',[xC-aParticula/2,yC-aParticula/2,aParticula,aParticula],'curvature',[1 1]); % Graficar la partícula central
+
+% Graficar la partícula central
+h=rectangle('Position',[xC-aParticula/2,yC-aParticula/2,aParticula,aParticula],'curvature',[1 1]); 
 set(h,'Facecolor',[0 0 0],'Edgecolor',[0 0 1]);
-h=rectangle('Position',[xCn-a/2,yCn-a/2,a,a],'curvature',[1 1]); % Graficar la partícula negativa
+
+% Graficar la partícula negativa
+h=rectangle('Position',[xCn-a/2,yCn-a/2,a,a],'curvature',[1 1]); 
 set(h,'Facecolor',[0 0 1],'Edgecolor',[0 0 1]);
 text(xCn-0.07,yCn+0.05,'-','Color','white','FontSize',30);
-h=rectangle('Position',[xCp-a/2,yCp-a/2,a,a],'curvature',[1 1]); % Graficar la partícula positiva
+% Graficar la partícula positiva
+h=rectangle('Position',[xCp-a/2,yCp-a/2,a,a],'curvature',[1 1]); 
 set(h,'Facecolor',[1 0 0],'Edgecolor',[1 0 1]);
 text(xCp-0.1,yCp,'+','Color','white','FontSize',30);
 
