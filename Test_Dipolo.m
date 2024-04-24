@@ -7,43 +7,28 @@ x=linspace(minX,maxX,N); % Generar valores de x
 y=linspace(minY,maxY,N); % Generar valores de y
 [xG,yG]=meshgrid(x,y); % Crear una cuadrícula de puntos en el espacio 2D
 
-NQn = 3;
-NQp = 3;
+NQn = 5; % Número de partículas negativas
+NQp = 5; % Número de partículas positivas
 
 % Información de carga negativa
-% xCn = ones(1, NQn);
-% yCn = linspace(0, (NQn-1)*a, NQn);
-xCn = 0; % Coordenada x de la partícula negativa
-yCn = 0; % Coordenada y de la partícula negativa
+xCn = 0.5; % Coordenada x de la partícula negativa
+yCn = -1; % Coordenada y de la partícula negativa
 Qn = -20; % Carga negativa de la partícula
 
 % Posición de la partícula positiva
-xCp =1; % Coordenada x de la partícula positiva
-yCp = 0; % Coordenada y de la partícula positiva
+xCp =-0.5; % Coordenada x de la partícula positiva
+yCp =-1; % Coordenada y de la partícula positiva
 Qp = 20; % Carga positiva de la partícula
-
-% Posición de la partícula central
-xC = 0; % Coordenada x de la partícula central
-yC = 0; % Coordenada y de la partícula central
 
 % Ancho de las partículas
 a=0.4; % Ancho de la partícula
-aParticula=0.1; % Ancho de la partícula central
 
 % Constantes
 eps0 = 8.85e-12; % Permitividad del espacio libre
 kC = 1/(4*pi*eps0); % Constante de Coulomb
 
-
-% Graficar la flecha
-% figure();
-
-% % Graficar la partícula central
-% h=rectangle('Position',[xC-aParticula/2,yC-aParticula/2,aParticula,aParticula],'curvature',[1 1]); 
-% set(h,'Facecolor',[0 0 0],'Edgecolor',[0 0 1]);
-
-u = zeros(size(xG));
-v = zeros(size(yG));
+u = zeros(size(xG)); % Componente x del campo eléctrico
+v = zeros(size(yG)); % Componente y del campo eléctrico
 
 % Graficar la partícula negativa
 for i=1:NQn
@@ -54,8 +39,8 @@ for i=1:NQn
         Ex = kC .* Qn .* Rx ./ R; % Componente x del campo eléctrico debido a la partícula negativa
         Ey = kC .* Qn .* Ry ./ R; % Componente y del campo eléctrico debido a la partícula negativa
         
-        u = u + Ex;
-        v = v + Ey;
+        u = u + Ex; % Sumar las componentes x del campo eléctrico
+        v = v + Ey; % Sumar las componentes y del campo eléctrico
     end
 end
 
@@ -67,8 +52,8 @@ for i=1:NQp
         R = sqrt(Rx.^2 + Ry.^2).^3; % Distancia entre cada punto y la partícula positiva
         Ex = kC .* Qp .* Rx ./ R; % Componente x del campo eléctrico debido a la partícula positiva
         Ey = kC .* Qp .* Ry ./ R; % Componente y del campo eléctrico debido a la partícula positiva
-        u = u + Ex;
-        v = v + Ey;
+        u = u + Ex; % Sumar las componentes x del campo eléctrico
+        v = v + Ey; % Sumar las componentes y del campo eléctrico
     end
 end
 
@@ -79,11 +64,11 @@ u = u./E; % Componente x del vector unitario del campo eléctrico
 v = v./E; % Componente y del vector unitario del campo eléctrico
 
 % Graficar las flechas
-% u_avg = mean(u(:)); % Componente x promedio del vector unitario del campo eléctrico
-% v_avg = mean(v(:)); % Componente y promedio del vector unitario del campo eléctrico
+u_avg = mean(u(:)); % Componente x promedio del vector unitario del campo eléctrico
+v_avg = mean(v(:)); % Componente y promedio del vector unitario del campo eléctrico
 
 figure();
-quiver(xG, yG, u, v, 'autoscalefactor', 0.6, 'color', [1 0 0], 'linewidth', 1.2);
+quiver(xG, yG, u, v, 'autoscalefactor', 0.6, 'color', [1 0 0], 'linewidth', 1.2); % Graficar las flechas del campo eléctrico
 hold on;
 
 for i=1:NQn
@@ -92,9 +77,16 @@ for i=1:NQn
         plot(xCp * ones(1, NQp), yCp + a * (0:NQp-1), 'ro', 'MarkerSize', 15, 'MarkerFaceColor', 'r'); % Cargas positivas
     end
 end
-axis([-1.5 1.5 -1.5 1.5]);
-axis equal;
-box on;
+axis([-1.5 1.5 -1.5 1.5]); % Establecer los límites del eje x y el eje y
+axis equal; % Establecer la relación de aspecto igual
+box on; % Mostrar el borde de la figura
+
+% Posición de la partícula central
+% xC = 0; % Coordenada x de la partícula central
+% yC = 0; % Coordenada y de la partícula central
+% aParticula=0.1; % Ancho de la partícula central
+% h=rectangle('Position',[xC-aParticula/2,yC-aParticula/2,aParticula,aParticula],'curvature',[1 1]); 
+% set(h,'Facecolor',[0 0 0],'Edgecolor',[0 0 1]);
 
 % % Cálculo del Campo Eléctrico => Partícula Central 2
 % magnitudDeCargas = sqrt(Qn^2 + Qp^2); % Magnitud de las cargas
