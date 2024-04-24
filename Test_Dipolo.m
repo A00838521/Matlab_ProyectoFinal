@@ -49,7 +49,7 @@ v = zeros(size(yG));
 for i=1:NQn
     for j=1:NQn
         Rx = xG - xCn; % Componente x de la distancia entre cada punto y la partícula negativa
-        Ry = yG - yCn - (a * j-1); % Componente y de la distancia entre cada punto y la partícula negativa
+        Ry = yG - yCn - (a * (j-1)); % Componente y de la distancia entre cada punto y la partícula negativa
         R = sqrt(Rx.^2 + Ry.^2).^3; % Distancia entre cada punto y la partícula negativa
         Ex = kC .* Qn .* Rx ./ R; % Componente x del campo eléctrico debido a la partícula negativa
         Ey = kC .* Qn .* Ry ./ R; % Componente y del campo eléctrico debido a la partícula negativa
@@ -63,10 +63,10 @@ end
 for i=1:NQp
     for j=1:NQp
         Rx = xG - xCp; % Componente x de la distancia entre cada punto y la partícula positiva
-        Ry = yG - yCp - (a * j-1); % Componente y de la distancia entre cada punto y la partícula positiva
+        Ry = yG - yCp - (a * (j-1)); % Componente y de la distancia entre cada punto y la partícula positiva
         R = sqrt(Rx.^2 + Ry.^2).^3; % Distancia entre cada punto y la partícula positiva
-        Ex = Ex + kC .* Qp .* Rx ./ R; % Componente x del campo eléctrico debido a la partícula positiva
-        Ey = Ey + kC .* Qp .* Ry ./ R; % Componente y del campo eléctrico debido a la partícula positiva
+        Ex = kC .* Qp .* Rx ./ R; % Componente x del campo eléctrico debido a la partícula positiva
+        Ey = kC .* Qp .* Ry ./ R; % Componente y del campo eléctrico debido a la partícula positiva
         u = u + Ex;
         v = v + Ey;
     end
